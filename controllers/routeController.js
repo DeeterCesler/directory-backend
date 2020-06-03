@@ -20,8 +20,6 @@ router.post("/new", async (req, res) => {
 router.post("/search", async (req, res) => {
   console.log('TIME TO SEARCHHH!!!');
   console.log(req.body);
-  // search for businesses
-  //
   let foundBizzies;
   if (req.body.zip){
     foundBizzies = await Business.find({zip: new RegExp(req.body.zip + '.*?')})
@@ -39,6 +37,10 @@ router.post("/search", async (req, res) => {
     if (req.body.type){
       foundBizzies = foundBizzies.filter(biz => biz.type === req.body.type)
     }
+  } else if (req.body.type) {
+    foundBizzies = await Business.find({type: req.body.type})
+  } else {
+    foundBizzies = await Business.find();
   }
   console.log(foundBizzies)
 
