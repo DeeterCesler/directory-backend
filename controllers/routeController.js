@@ -6,11 +6,7 @@ router.post("/new", async (req, res) => {
   console.log('NEW ROUTE!!!');
   console.log(req.body);
 
-  try {
-    const newBiz = await Business.create(req.body);
-  } catch (er) {
-    console.log('error: ' + er);
-  }
+  const newBiz = await Business.create(req.body);
   console.log('new biz')
   console.log(newBiz)
 
@@ -26,29 +22,25 @@ router.post("/search", async (req, res) => {
   console.log(req.body);
   // search for businesses
   //
-  try {
-    let foundBizzies;
-    if (req.body.zip){
-      foundBizzies = await Business.find({zip: new RegExp(req.body.zip + '.*?')})
-      if (req.body.type){
-        foundBizzies = foundBizzies.filter(biz => biz.type === req.body.type)
-      }
-      if (req.body.name){
-        foundBizzies = foundBizzies.filter(biz => biz.name.match(new RegExp(req.body.name + '.*?', 'i')))
-      } 
-    } else if (req.body.name) {
-      foundBizzies = await Business.find({name: new RegExp(req.body.name + '.*?', 'i')})
-      if (req.body.zip){
-        foundBizzies = foundBizzies.filter(biz => biz.zip.match(new RegExp(req.body.zip + '.*?', 'i')))
-      }
-      if (req.body.type){
-        foundBizzies = foundBizzies.filter(biz => biz.type === req.body.type)
-      }
+  let foundBizzies;
+  if (req.body.zip){
+    foundBizzies = await Business.find({zip: new RegExp(req.body.zip + '.*?')})
+    if (req.body.type){
+      foundBizzies = foundBizzies.filter(biz => biz.type === req.body.type)
     }
-    console.log(foundBizzies)
-  } catch (e) {
-    console.log('error: ' + e);
+    if (req.body.name){
+      foundBizzies = foundBizzies.filter(biz => biz.name.match(new RegExp(req.body.name + '.*?', 'i')))
+    } 
+  } else if (req.body.name) {
+    foundBizzies = await Business.find({name: new RegExp(req.body.name + '.*?', 'i')})
+    if (req.body.zip){
+      foundBizzies = foundBizzies.filter(biz => biz.zip.match(new RegExp(req.body.zip + '.*?', 'i')))
+    }
+    if (req.body.type){
+      foundBizzies = foundBizzies.filter(biz => biz.type === req.body.type)
+    }
   }
+  console.log(foundBizzies)
 
   res.json({
     status: 200,
