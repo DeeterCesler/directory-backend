@@ -2,6 +2,14 @@ const express = require("express");
 const router = express.Router();
 const Business = require("../models/business");
 
+router.get('/ping', (req, res) => {
+  console.log('PING!');
+  res.json({
+    status: 200,
+    message: "SERVER IS AWAKE!"
+  });
+});
+
 router.post("/new", async (req, res) => {
   console.log('NEW ROUTE!!!');
   console.log(req.body);
@@ -24,7 +32,7 @@ router.post("/search", async (req, res) => {
   if (req.body.zip){
     foundBizzies = await Business.find({zip: new RegExp(req.body.zip + '.*?')})
     if (req.body.type){
-      foundBizzies = foundBizzies.filter(biz => biz.type === req.body.type)
+      foundBizzies = foundBizzies.filter(biz => biz.type.toLowerCase() === req.body.type.toLowerCase())
     }
     if (req.body.name){
       foundBizzies = foundBizzies.filter(biz => biz.name.match(new RegExp(req.body.name + '.*?', 'i')))
@@ -35,10 +43,10 @@ router.post("/search", async (req, res) => {
       foundBizzies = foundBizzies.filter(biz => biz.zip.match(new RegExp(req.body.zip + '.*?', 'i')))
     }
     if (req.body.type){
-      foundBizzies = foundBizzies.filter(biz => biz.type === req.body.type)
+      foundBizzies = foundBizzies.filter(biz => biz.type.toLowerCase() === req.body.type.toLowerCase())
     }
   } else if (req.body.type) {
-    foundBizzies = await Business.find({type: req.body.type})
+    foundBizzies = await Business.find({type: req.body.type.toLowerCase()})
   } else {
     foundBizzies = await Business.find();
   }
@@ -47,8 +55,7 @@ router.post("/search", async (req, res) => {
   res.json({
     status: 200,
     data: foundBizzies
-  })
-
+  });
 });
 
 module.exports = router;
